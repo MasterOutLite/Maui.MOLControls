@@ -128,6 +128,7 @@ public partial class AutoCompleteViewHandler : ViewHandler<IAutoCompleteView, Au
     }
 
     public static void MapPlaceholderColor(AutoCompleteViewHandler handler, IAutoCompleteView view)
+
     {
         handler.PlatformView?.SetPlaceholderColor(view.PlaceholderColor);
     }
