@@ -10,6 +10,7 @@ using Java.Lang;
 using Maui.FreakyControls.Platforms.Android.NativeControls;
 using Maui.FreakyControls.Shared.Enums;
 using Maui.MOLControls.Events;
+using Maui.MOLControls.Platforms.Android.NativeControls.ArrayAdapter;
 using Microsoft.Maui.Platform;
 using Color = Microsoft.Maui.Graphics.Color;
 using Rect = Android.Graphics.Rect;
@@ -22,7 +23,7 @@ public class AutoCompleteNativeView : AppCompatAutoCompleteTextView
 {
     protected bool suppressTextChangedEvent;
     protected Func<object, string> textFunc;
-    protected SuggestCompleteAdapter adapter;
+    protected AutoCompleteArrayAdapter adapter;
     protected Drawable drawableRight;
     protected Drawable drawableLeft;
     protected Drawable drawableTop;
@@ -37,8 +38,11 @@ public class AutoCompleteNativeView : AppCompatAutoCompleteTextView
                     global::Android.Text.InputTypes
                         .TextVariationVisiblePassword; //Disables text suggestions as the auto-complete view is there to do that
         ItemClick += OnItemClick;
+        // Adapter = adapter =
+        //     new SuggestCompleteAdapter(Context, global::Android.Resource.Layout.SimpleDropDownItem1Line);
+
         Adapter = adapter =
-            new SuggestCompleteAdapter(Context, global::Android.Resource.Layout.SimpleDropDownItem1Line);
+            new AutoCompleteArrayAdapter(Context, global::Android.Resource.Layout.SimpleDropDownItem1Line);
     }
 
     public override bool EnoughToFilter() => true;
@@ -303,8 +307,7 @@ public class AutoCompleteNativeView : AppCompatAutoCompleteTextView
 
     public void UpdateAdapterStyle(SuggestCompleteAdapterStyle adapterStyle)
     {
-        Adapter = adapter =
-            new SuggestCompleteAdapter(Context, global::Android.Resource.Layout.SimpleDropDownItem1Line, adapterStyle);
+        adapter.SetStyle(adapterStyle);
     }
 
     protected class SuggestCompleteAdapter : global::Android.Widget.ArrayAdapter, IFilterable
@@ -393,18 +396,11 @@ public class AutoCompleteNativeView : AppCompatAutoCompleteTextView
                 if (resultList is null)
                     return new FilterResults() { Count = 0, Values = null };
                 var arr = resultList.ToArray();
-                // var text = constraint.ToString().ToLower();
-                // var filterArr = arr.Where(s => s.ToLower().Contains(text)).ToArray();
                 return new FilterResults() { Count = arr.Length, Values = arr };
             }
 
             protected override void PublishResults(ICharSequence constraint, FilterResults results)
             {
-                // if (results.Values is IEnumerable<string> enumerable)
-                // {
-                //     resultList = enumerable;
-                //     this.Notify();
-                // }
             }
         }
     }
