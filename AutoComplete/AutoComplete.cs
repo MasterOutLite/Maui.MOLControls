@@ -1,4 +1,5 @@
 ﻿using Maui.FreakyControls;
+using Maui.MOLControls.Events;
 
 namespace Maui.MOLControls;
 
@@ -27,6 +28,16 @@ public class AutoComplete : FreakyAutoCompleteView, IAutoComplete
     {
         get => (float)GetValue(FontSizeProperty);
         set => SetValue(FontSizeProperty, value);
+    }
+
+    public void RaiseSuggestionChosen(ChosenElementEvent e)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void NativeControlTextChanged(TextChangedEvent e)
+    {
+        throw new NotImplementedException();
     }
 
     public static readonly BindableProperty FontSizeProperty =

@@ -1,12 +1,4 @@
-﻿#if ANDROID
-
-using Microsoft.Maui.Controls.Compatibility.Platform.Android;
-using static Microsoft.Maui.ApplicationModel.Platform;
-using NativeImage = Android.Graphics.Bitmap;
-
-#endif
-
-namespace Maui.MOLControls;
+﻿namespace Maui.MOLControls;
 
 public static class DependencyInjection
 {
@@ -20,6 +12,7 @@ public static class DependencyInjection
     private static void AddHandlers(this IMauiHandlersCollection handlers)
     {
         handlers.AddHandler(typeof(AutoComplete), typeof(AutoCompleteHandler));
+        handlers.AddHandler(typeof(AutoCompleteView), typeof(AutoCompleteViewHandler));
 #if ANDROID
         handlers.AddHandler(typeof(AutoCompleteTextCenter), typeof(AutoCompleteTextCenterHandler));
 #endif
