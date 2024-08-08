@@ -34,14 +34,14 @@ public partial class AutoCompleteViewHandler : ViewHandler<IAutoCompleteView, Au
             FontFamily = VirtualView.FontFamily
         });
 
-        platformView.Click += PlatformViewOnClick;
+        // platformView.Click += PlatformViewOnClick;
     }
 
     protected override void DisconnectHandler(AutoCompleteNativeView platformView)
     {
         platformView.SuggestionChosen -= OnPlatformViewSuggestionChosen;
         platformView.TextChanged -= OnPlatformViewTextChanged;
-        platformView.Click -= PlatformViewOnClick;
+        // platformView.Click -= PlatformViewOnClick;
 
         platformView.Dispose();
         base.DisconnectHandler(platformView);

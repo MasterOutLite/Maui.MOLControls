@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Maui.MOLControls.TouchableView">
+    <ContentView.GestureRecognizers>
+        <TapGestureRecognizer Tapped="OnTapped" />
+    </ContentView.GestureRecognizers>
+
+    <Border BackgroundColor="Aquamarine">
+        <Grid ColumnSpacing="2"
+              ColumnDefinitions="auto, 1*, auto">
+
+            <VerticalStackLayout Grid.Column="1"
+                                 x:Name="Container">
+
+            </VerticalStackLayout>
+
+        </Grid>
+    </Border>
+
+</ContentView>
