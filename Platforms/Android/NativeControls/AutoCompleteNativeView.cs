@@ -7,9 +7,9 @@ using Android.Views.InputMethods;
 using Android.Widget;
 using AndroidX.AppCompat.Widget;
 using Java.Lang;
-using Maui.FreakyControls.Platforms.Android.NativeControls;
-using Maui.FreakyControls.Shared.Enums;
+using Maui.MOLControls.Enums;
 using Maui.MOLControls.Events;
+using Maui.MOLControls.Platforms.Android.NativeControls.ArrayAdapter;
 using Microsoft.Maui.Platform;
 using Color = Microsoft.Maui.Graphics.Color;
 using Rect = Android.Graphics.Rect;
@@ -22,13 +22,12 @@ public class AutoCompleteNativeView : AppCompatAutoCompleteTextView
 {
     protected bool suppressTextChangedEvent;
     protected Func<object, string> textFunc;
-    protected SuggestCompleteAdapter adapter;
+    protected AutoCompleteArrayAdapter adapter;
     protected Drawable drawableRight;
     protected Drawable drawableLeft;
     protected Drawable drawableTop;
     protected Drawable drawableBottom;
     protected int actionX, actionY;
-    protected IDrawableClickListener clickListener;
 
     public AutoCompleteNativeView(Context context) : base(context)
     {
@@ -37,8 +36,11 @@ public class AutoCompleteNativeView : AppCompatAutoCompleteTextView
                     global::Android.Text.InputTypes
                         .TextVariationVisiblePassword; //Disables text suggestions as the auto-complete view is there to do that
         ItemClick += OnItemClick;
+        // Adapter = adapter =
+        //     new SuggestCompleteAdapter(Context, global::Android.Resource.Layout.SimpleDropDownItem1Line);
+
         Adapter = adapter =
-            new SuggestCompleteAdapter(Context, global::Android.Resource.Layout.SimpleDropDownItem1Line);
+            new AutoCompleteArrayAdapter(Context, global::Android.Resource.Layout.SimpleDropDownItem1Line);
     }
 
     public override bool EnoughToFilter() => true;
@@ -180,14 +182,12 @@ public class AutoCompleteNativeView : AppCompatAutoCompleteTextView
             if (drawableBottom is not null
                 && drawableBottom.Bounds.Contains(actionX, actionY))
             {
-                clickListener.OnClick(DrawablePosition.Bottom);
                 return base.OnTouchEvent(e);
             }
 
             if (drawableTop is not null
                 && drawableTop.Bounds.Contains(actionX, actionY))
             {
-                clickListener.OnClick(DrawablePosition.Top);
                 return base.OnTouchEvent(e);
             }
 
@@ -221,9 +221,8 @@ public class AutoCompleteNativeView : AppCompatAutoCompleteTextView
                     }
                 }
 
-                if (bounds.Contains(x, y) && clickListener is not null)
+                if (bounds.Contains(x, y))
                 {
-                    clickListener.OnClick(DrawablePosition.Left);
                     e.Action = (MotionEventActions.Cancel);
                     return false;
                 }
@@ -272,10 +271,8 @@ public class AutoCompleteNativeView : AppCompatAutoCompleteTextView
                     y = actionY;
 
                 //If drawble bounds contains the x and y points then move ahead./
-                if (bounds.Contains(x, y) && clickListener is not null)
+                if (bounds.Contains(x, y))
                 {
-                    clickListener
-                        .OnClick(DrawablePosition.Right);
                     e.Action = (MotionEventActions.Cancel);
                     return false;
                 }
@@ -296,15 +293,9 @@ public class AutoCompleteNativeView : AppCompatAutoCompleteTextView
         base.JavaFinalize();
     }
 
-    public void SetDrawableClickListener(IDrawableClickListener listener)
-    {
-        this.clickListener = listener;
-    }
-
     public void UpdateAdapterStyle(SuggestCompleteAdapterStyle adapterStyle)
     {
-        Adapter = adapter =
-            new SuggestCompleteAdapter(Context, global::Android.Resource.Layout.SimpleDropDownItem1Line, adapterStyle);
+        adapter.SetStyle(adapterStyle);
     }
 
     protected class SuggestCompleteAdapter : global::Android.Widget.ArrayAdapter, IFilterable
@@ -393,18 +384,11 @@ public class AutoCompleteNativeView : AppCompatAutoCompleteTextView
                 if (resultList is null)
                     return new FilterResults() { Count = 0, Values = null };
                 var arr = resultList.ToArray();
-                // var text = constraint.ToString().ToLower();
-                // var filterArr = arr.Where(s => s.ToLower().Contains(text)).ToArray();
                 return new FilterResults() { Count = arr.Length, Values = arr };
             }
 
             protected override void PublishResults(ICharSequence constraint, FilterResults results)
             {
-                // if (results.Values is IEnumerable<string> enumerable)
-                // {
-                //     resultList = enumerable;
-                //     this.Notify();
-                // }
             }
         }
     }

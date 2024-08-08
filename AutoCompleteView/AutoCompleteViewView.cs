@@ -1,11 +1,10 @@
-﻿using Maui.FreakyControls.Shared.Enums;
-using Maui.FreakyControls;
-using System.Windows.Input;
+﻿using Maui.MOLControls.Enums;
 using Maui.MOLControls.Events;
+
 
 namespace Maui.MOLControls;
 
-public class AutoCompleteView : View, IAutoComplete
+public class AutoCompleteViewView : View, IAutoCompleteView
 {
     private readonly WeakEventManager _querySubmittedEventManager = new();
     public readonly WeakEventManager _textChangedEventManager = new();
@@ -18,7 +17,7 @@ public class AutoCompleteView : View, IAutoComplete
     }
 
     public static readonly BindableProperty HorizontalTextAlignmentProperty =
-        BindableProperty.Create(nameof(HorizontalTextAlignment), typeof(TextAlignment), typeof(AutoCompleteView),
+        BindableProperty.Create(nameof(HorizontalTextAlignment), typeof(TextAlignment), typeof(AutoCompleteViewView),
             TextAlignment.Center, BindingMode.TwoWay);
 
     public string FontFamily
@@ -28,7 +27,8 @@ public class AutoCompleteView : View, IAutoComplete
     }
 
     public static readonly BindableProperty FontFamilyProperty =
-        BindableProperty.Create(nameof(FontFamily), typeof(string), typeof(AutoCompleteView), defaultValue: null);
+        BindableProperty.Create(nameof(FontFamily), typeof(string), typeof(AutoCompleteViewView),
+            null);
 
     public float FontSize
     {
@@ -37,7 +37,7 @@ public class AutoCompleteView : View, IAutoComplete
     }
 
     public static readonly BindableProperty FontSizeProperty =
-        BindableProperty.Create(nameof(FontSize), typeof(float), typeof(AutoCompleteView), defaultValue: 20f);
+        BindableProperty.Create(nameof(FontSize), typeof(float), typeof(AutoCompleteViewView), defaultValue: 20f);
 
     private bool suppressTextChangedEvent;
     private readonly WeakEventManager querySubmittedEventManager = new();
@@ -51,12 +51,13 @@ public class AutoCompleteView : View, IAutoComplete
     }
 
     public static readonly BindableProperty TextProperty =
-        BindableProperty.Create(nameof(Text), typeof(string), typeof(AutoCompleteView), "", BindingMode.OneWay, null,
+        BindableProperty.Create(nameof(Text), typeof(string), typeof(AutoCompleteViewView), "", BindingMode.OneWay,
+            null,
             OnTextPropertyChanged);
 
     private static void OnTextPropertyChanged(BindableObject bindable, object oldValue, object newValue)
     {
-        var box = (AutoCompleteView)bindable;
+        var box = (AutoCompleteViewView)bindable;
         if (!box.suppressTextChangedEvent)
             box.textChangedEventManager.HandleEvent(box, new TextChangedEvent("", TextChangeReason.ProgrammaticChange),
                 nameof(TextChanged));
@@ -69,7 +70,8 @@ public class AutoCompleteView : View, IAutoComplete
     }
 
     public static readonly BindableProperty ThresholdProperty =
-        BindableProperty.Create(nameof(Threshold), typeof(int), typeof(AutoCompleteView), 1, BindingMode.OneWay, null,
+        BindableProperty.Create(nameof(Threshold), typeof(int), typeof(AutoCompleteViewView), 1, BindingMode.OneWay,
+            null,
             OnTextPropertyChanged);
 
     public Color TextColor
@@ -79,7 +81,7 @@ public class AutoCompleteView : View, IAutoComplete
     }
 
     public static readonly BindableProperty TextColorProperty =
-        BindableProperty.Create(nameof(TextColor), typeof(Color), typeof(AutoCompleteView), Colors.Gray,
+        BindableProperty.Create(nameof(TextColor), typeof(Color), typeof(AutoCompleteViewView), Colors.Gray,
             BindingMode.OneWay, null, null);
 
     public string Placeholder
@@ -89,7 +91,7 @@ public class AutoCompleteView : View, IAutoComplete
     }
 
     public static readonly BindableProperty PlaceholderProperty =
-        BindableProperty.Create(nameof(Placeholder), typeof(string), typeof(AutoCompleteView), string.Empty,
+        BindableProperty.Create(nameof(Placeholder), typeof(string), typeof(AutoCompleteViewView), string.Empty,
             BindingMode.OneWay, null, null);
 
     public Color PlaceholderColor
@@ -99,7 +101,7 @@ public class AutoCompleteView : View, IAutoComplete
     }
 
     public static readonly BindableProperty PlaceholderColorProperty =
-        BindableProperty.Create(nameof(PlaceholderColor), typeof(Color), typeof(AutoCompleteView), Colors.Gray,
+        BindableProperty.Create(nameof(PlaceholderColor), typeof(Color), typeof(AutoCompleteViewView), Colors.Gray,
             BindingMode.OneWay, null, null);
 
     public string TextMemberPath
@@ -109,7 +111,7 @@ public class AutoCompleteView : View, IAutoComplete
     }
 
     public static readonly BindableProperty TextMemberPathProperty =
-        BindableProperty.Create(nameof(TextMemberPath), typeof(string), typeof(AutoCompleteView), string.Empty,
+        BindableProperty.Create(nameof(TextMemberPath), typeof(string), typeof(AutoCompleteViewView), string.Empty,
             BindingMode.OneWay, null, null);
 
     public string DisplayMemberPath
@@ -119,7 +121,7 @@ public class AutoCompleteView : View, IAutoComplete
     }
 
     public static readonly BindableProperty DisplayMemberPathProperty =
-        BindableProperty.Create(nameof(DisplayMemberPath), typeof(string), typeof(AutoCompleteView), string.Empty,
+        BindableProperty.Create(nameof(DisplayMemberPath), typeof(string), typeof(AutoCompleteViewView), string.Empty,
             BindingMode.OneWay, null, null);
 
     public bool IsSuggestionListOpen
@@ -129,7 +131,7 @@ public class AutoCompleteView : View, IAutoComplete
     }
 
     public static readonly BindableProperty IsSuggestionListOpenProperty =
-        BindableProperty.Create(nameof(IsSuggestionListOpen), typeof(bool), typeof(AutoCompleteView), false,
+        BindableProperty.Create(nameof(IsSuggestionListOpen), typeof(bool), typeof(AutoCompleteViewView), false,
             BindingMode.OneWay, null, null);
 
     public bool UpdateTextOnSelect
@@ -139,7 +141,7 @@ public class AutoCompleteView : View, IAutoComplete
     }
 
     public static readonly BindableProperty UpdateTextOnSelectProperty =
-        BindableProperty.Create(nameof(UpdateTextOnSelect), typeof(bool), typeof(AutoCompleteView), true,
+        BindableProperty.Create(nameof(UpdateTextOnSelect), typeof(bool), typeof(AutoCompleteViewView), true,
             BindingMode.OneWay, null, null);
 
     public System.Collections.IList ItemsSource
@@ -149,7 +151,8 @@ public class AutoCompleteView : View, IAutoComplete
     }
 
     public static readonly BindableProperty ItemsSourceProperty =
-        BindableProperty.Create(nameof(ItemsSource), typeof(System.Collections.IList), typeof(AutoCompleteView), null,
+        BindableProperty.Create(nameof(ItemsSource), typeof(System.Collections.IList), typeof(AutoCompleteViewView),
+            null,
             BindingMode.OneWay, null, null);
 
     public bool AllowCopyPaste
@@ -161,95 +164,11 @@ public class AutoCompleteView : View, IAutoComplete
     public static readonly BindableProperty AllowCopyPasteProperty = BindableProperty.Create(
         nameof(AllowCopyPaste),
         typeof(bool),
-        typeof(AutoCompleteView),
+        typeof(AutoCompleteViewView),
         false,
         BindingMode.OneWay,
         null,
         null);
-
-    public static readonly BindableProperty ImageSourceProperty = BindableProperty.Create(
-        nameof(Image),
-        typeof(ImageSource),
-        typeof(AutoCompleteView),
-        default(ImageSource));
-
-    public static readonly BindableProperty ImageHeightProperty = BindableProperty.Create(
-        nameof(ImageHeight),
-        typeof(int),
-        typeof(AutoCompleteView),
-        25);
-
-    public static readonly BindableProperty ImageWidthProperty = BindableProperty.Create(
-        nameof(ImageWidth),
-        typeof(int),
-        typeof(AutoCompleteView),
-        25);
-
-    public static readonly BindableProperty ImageAlignmentProperty = BindableProperty.Create(
-        nameof(ImageAlignment),
-        typeof(ImageAlignment),
-        typeof(AutoCompleteView),
-        ImageAlignment.Right);
-
-    public static readonly BindableProperty ImagePaddingProperty = BindableProperty.Create(
-        nameof(ImagePadding),
-        typeof(int),
-        typeof(FreakyAutoCompleteView),
-        5);
-
-    public static readonly BindableProperty ImageCommandProperty = BindableProperty.Create(
-        nameof(ImagePadding),
-        typeof(ICommand),
-        typeof(AutoCompleteView),
-        default(ICommand));
-
-    public static readonly BindableProperty ImageCommandParameterProperty = BindableProperty.Create(
-        nameof(ImageCommandParameter),
-        typeof(object),
-        typeof(AutoCompleteView),
-        default);
-
-    public object ImageCommandParameter
-    {
-        get => GetValue(ImageCommandParameterProperty);
-        set => SetValue(ImageCommandParameterProperty, value);
-    }
-
-    public ICommand ImageCommand
-    {
-        get => (ICommand)GetValue(ImageCommandProperty);
-        set => SetValue(ImageCommandProperty, value);
-    }
-
-    public int ImagePadding
-    {
-        get => (int)GetValue(ImagePaddingProperty);
-        set => SetValue(ImagePaddingProperty, value);
-    }
-
-    public int ImageWidth
-    {
-        get => (int)GetValue(ImageWidthProperty);
-        set => SetValue(ImageWidthProperty, value);
-    }
-
-    public int ImageHeight
-    {
-        get => (int)GetValue(ImageHeightProperty);
-        set => SetValue(ImageHeightProperty, value);
-    }
-
-    public ImageSource ImageSource
-    {
-        get => (ImageSource)GetValue(ImageSourceProperty);
-        set => SetValue(ImageSourceProperty, value);
-    }
-
-    public ImageAlignment ImageAlignment
-    {
-        get => (ImageAlignment)GetValue(ImageAlignmentProperty);
-        set => SetValue(ImageAlignmentProperty, value);
-    }
 
     public event EventHandler<ChosenElementEvent> SuggestionChosen
     {
@@ -274,16 +193,5 @@ public class AutoCompleteView : View, IAutoComplete
         Text = args.Text;
         suppressTextChangedEvent = false;
         textChangedEventManager.HandleEvent(this, args, nameof(TextChanged));
-    }
-
-    public void RaiseQuerySubmitted(FreakyAutoCompleteViewQuerySubmittedEventArgs args)
-    {
-        querySubmittedEventManager.HandleEvent(this, args, nameof(QuerySubmitted));
-    }
-
-    public event EventHandler<FreakyAutoCompleteViewQuerySubmittedEventArgs> QuerySubmitted
-    {
-        add => querySubmittedEventManager.AddEventHandler(value);
-        remove => querySubmittedEventManager.RemoveEventHandler(value);
     }
 }

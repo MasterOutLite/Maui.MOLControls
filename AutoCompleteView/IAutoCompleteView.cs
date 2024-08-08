@@ -1,10 +1,9 @@
 ﻿using System.Collections;
-using Maui.FreakyControls;
 using Maui.MOLControls.Events;
 
 namespace Maui.MOLControls;
 
-public interface IAutoComplete : IView
+public interface IAutoCompleteView : IView
 {
     public TextAlignment HorizontalTextAlignment { get; set; }
     public string FontFamily { get; set; }

@@ -1,8 +1,8 @@
 ﻿using Android.Content.Res;
 using Android.Graphics;
 using AndroidX.Core.View;
-using Maui.FreakyControls;
 using Maui.MOLControls.Events;
+using Maui.MOLControls.Platforms.Android.Extensions;
 using Maui.MOLControls.Platforms.Android.Helpers;
 using Maui.MOLControls.Platforms.Android.NativeControls;
 using Microsoft.Maui.Handlers;
@@ -10,7 +10,7 @@ using Microsoft.Maui.Platform;
 
 namespace Maui.MOLControls;
 
-public partial class AutoCompleteViewHandler : ViewHandler<IAutoComplete, AutoCompleteNativeView>
+public partial class AutoCompleteViewHandler : ViewHandler<IAutoCompleteView, AutoCompleteNativeView>
 {
     protected override AutoCompleteNativeView CreatePlatformView()
     {
@@ -67,38 +67,37 @@ public partial class AutoCompleteViewHandler : ViewHandler<IAutoComplete, AutoCo
         VirtualView?.NativeControlTextChanged(e);
     }
 
-    public static void MapText(AutoCompleteViewHandler handler, IAutoComplete view)
+    public static void MapText(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
         if (handler.PlatformView.Text != view.Text)
             handler.PlatformView.Text = view.Text;
     }
 
-    public static void MapTextColor(AutoCompleteViewHandler handler, IAutoComplete view)
+    public static void MapTextColor(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
         handler.PlatformView?.SetTextColor(view.TextColor.ToPlatform());
     }
 
-    public static void MapPlaceholder(AutoCompleteViewHandler handler, IAutoComplete view)
+    public static void MapPlaceholder(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
         handler.PlatformView.Placeholder = view.Placeholder;
     }
 
-    public static void MapFontFamily(AutoCompleteViewHandler handler, IAutoComplete view)
+    public static void MapFontFamily(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
-        if (!string.IsNullOrWhiteSpace(view.FontFamily))
+        if (!string.IsNullOrWhiteSpace(view.FontFamily) &&
+            FontFamilyAsset.TryGeTypeFace(view.FontFamily, out var face))
         {
-            handler.PlatformView.Typeface = Typeface.CreateFromAsset(
-                Platform.CurrentActivity?.Assets,
-                $"{view.FontFamily}.ttf");
+            handler.PlatformView.Typeface = face;
         }
     }
 
-    public static void MapFontSize(AutoCompleteViewHandler handler, IAutoComplete view)
+    public static void MapFontSize(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
         handler.PlatformView.TextSize = view.FontSize;
     }
 
-    public static void MapHorizontalTextAlignment(AutoCompleteViewHandler handler, IAutoComplete view)
+    public static void MapHorizontalTextAlignment(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
         handler.PlatformView.TextAlignment = view.HorizontalTextAlignment switch
         {
@@ -109,12 +108,12 @@ public partial class AutoCompleteViewHandler : ViewHandler<IAutoComplete, AutoCo
         };
     }
 
-    public static void MapThreshold(AutoCompleteViewHandler handler, IAutoComplete view)
+    public static void MapThreshold(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
         handler.PlatformView.Threshold = view.Threshold;
     }
 
-    public static void MapAllowCopyPaste(AutoCompleteViewHandler handler, IAutoComplete view)
+    public static void MapAllowCopyPaste(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
         if (view.AllowCopyPaste)
         {
@@ -128,63 +127,39 @@ public partial class AutoCompleteViewHandler : ViewHandler<IAutoComplete, AutoCo
         }
     }
 
-    public static async void MapImageSource(AutoCompleteViewHandler handler, IFreakyAutoCompleteView view)
-    {
-        // var entry = handler.VirtualView;
-        // var imageBitmap = await entry.ImageSource?.ToNativeImageSourceAsync();
-        // if (imageBitmap is not null)
-        // {
-        //     var bitmapDrawable = new BitmapDrawable(CurrentActivity.Resources,
-        //         Bitmap.CreateScaledBitmap(imageBitmap, entry.ImageWidth * 2, entry.ImageHeight * 2, true));
-        //     var freakyEditText = (handler.PlatformView as AutoCompleteNativeView);
-        //     freakyEditText.SetDrawableClickListener(new DrawableHandlerCallback(entry));
-        //     switch (entry.ImageAlignment)
-        //     {
-        //         case ImageAlignment.Left:
-        //             freakyEditText.SetCompoundDrawablesWithIntrinsicBounds(bitmapDrawable, null, null, null);
-        //             break;
-        //
-        //         case ImageAlignment.Right:
-        //             freakyEditText.SetCompoundDrawablesWithIntrinsicBounds(null, null, bitmapDrawable, null);
-        //             break;
-        //     }
-        // }
-        // handler.PlatformView.CompoundDrawablePadding = entry.ImagePadding;
-    }
-
-    public static void MapPlaceholderColor(AutoCompleteViewHandler handler, IAutoComplete view)
+    public static void MapPlaceholderColor(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
         handler.PlatformView?.SetPlaceholderColor(view.PlaceholderColor);
     }
 
-    public static void MapTextMemberPath(AutoCompleteViewHandler handler, IAutoComplete view)
+    public static void MapTextMemberPath(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
         handler.PlatformView?.SetItems(view.ItemsSource?.OfType<object>(), (o) => FormatType(o, view.DisplayMemberPath),
             (o) => FormatType(o, view.TextMemberPath));
     }
 
-    public static void MapDisplayMemberPath(AutoCompleteViewHandler handler, IAutoComplete view)
+    public static void MapDisplayMemberPath(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
         handler.PlatformView.SetItems(view?.ItemsSource?.OfType<object>(),
             (o) => FormatType(o, view?.DisplayMemberPath), (o) => FormatType(o, view?.TextMemberPath));
     }
 
-    public static void MapIsSuggestionListOpen(AutoCompleteViewHandler handler, IAutoComplete view)
+    public static void MapIsSuggestionListOpen(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
         handler.PlatformView.IsSuggestionListOpen = view.IsSuggestionListOpen;
     }
 
-    public static void MapUpdateTextOnSelect(AutoCompleteViewHandler handler, IAutoComplete view)
+    public static void MapUpdateTextOnSelect(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
         handler.PlatformView.UpdateTextOnSelect = view.UpdateTextOnSelect;
     }
 
-    public static void MapIsEnabled(AutoCompleteViewHandler handler, IAutoComplete view)
+    public static void MapIsEnabled(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
         handler.PlatformView.Enabled = view.IsEnabled;
     }
 
-    public static void MapItemsSource(AutoCompleteViewHandler handler, IAutoComplete view)
+    public static void MapItemsSource(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
         handler.PlatformView.SetItems(view?.ItemsSource?.OfType<object>(),
             (o) => FormatType(o, view?.DisplayMemberPath), (o) => FormatType(o, view?.TextMemberPath));
@@ -196,7 +171,7 @@ public partial class AutoCompleteViewHandler : ViewHandler<IAutoComplete, AutoCo
         platformView.SetTextColor(color.ToPlatform());
     }
 
-    private void UpdateDisplayMemberPath(AutoCompleteViewHandler handler, IAutoComplete view)
+    private void UpdateDisplayMemberPath(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
         handler.PlatformView.SetItems(view?.ItemsSource?.OfType<object>(),
             (o) => FormatType(o, view?.DisplayMemberPath), (o) => FormatType(o, view?.TextMemberPath));

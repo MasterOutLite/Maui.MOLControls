@@ -1,9 +1,7 @@
 ﻿#if ANDROID
-using Maui.FreakyControls;
-using PlatformView = Maui.FreakyControls.Platforms.Android.NativeControls.FreakyNativeAutoCompleteView;
+
 
 #elif IOS
-using PlatformView = Maui.FreakyControls.Platforms.iOS.NativeControls.FreakyNativeAutoCompleteView;
 #endif
 
 namespace Maui.MOLControls;
@@ -11,27 +9,27 @@ namespace Maui.MOLControls;
 #if ANDROID
 public partial class AutoCompleteViewHandler
 {
-    public static IPropertyMapper<IAutoComplete, AutoCompleteViewHandler> PropertyMapper =
-        new PropertyMapper<IAutoComplete, AutoCompleteViewHandler>(ViewMapper)
+    public static IPropertyMapper<IAutoCompleteView, AutoCompleteViewHandler> PropertyMapper =
+        new PropertyMapper<IAutoCompleteView, AutoCompleteViewHandler>(ViewMapper)
         {
-            [nameof(IAutoComplete.Text)] = MapText,
-            [nameof(IAutoComplete.TextColor)] = MapTextColor,
-            [nameof(IAutoComplete.Placeholder)] = MapPlaceholder,
-            [nameof(IAutoComplete.PlaceholderColor)] = MapPlaceholderColor,
-            [nameof(IAutoComplete.TextMemberPath)] = MapTextMemberPath,
-            [nameof(IAutoComplete.DisplayMemberPath)] = MapDisplayMemberPath,
-            [nameof(IAutoComplete.IsEnabled)] = MapIsEnabled,
-            [nameof(IAutoComplete.ItemsSource)] = MapItemsSource,
-            [nameof(IAutoComplete.UpdateTextOnSelect)] = MapUpdateTextOnSelect,
-            [nameof(IAutoComplete.IsSuggestionListOpen)] = MapIsSuggestionListOpen,
-            [nameof(IAutoComplete.Threshold)] = MapThreshold,
+            [nameof(IAutoCompleteView.Text)] = MapText,
+            [nameof(IAutoCompleteView.TextColor)] = MapTextColor,
+            [nameof(IAutoCompleteView.Placeholder)] = MapPlaceholder,
+            [nameof(IAutoCompleteView.PlaceholderColor)] = MapPlaceholderColor,
+            [nameof(IAutoCompleteView.TextMemberPath)] = MapTextMemberPath,
+            [nameof(IAutoCompleteView.DisplayMemberPath)] = MapDisplayMemberPath,
+            [nameof(IAutoCompleteView.IsEnabled)] = MapIsEnabled,
+            [nameof(IAutoCompleteView.ItemsSource)] = MapItemsSource,
+            [nameof(IAutoCompleteView.UpdateTextOnSelect)] = MapUpdateTextOnSelect,
+            [nameof(IAutoCompleteView.IsSuggestionListOpen)] = MapIsSuggestionListOpen,
+            [nameof(IAutoCompleteView.Threshold)] = MapThreshold,
 
-            [nameof(IAutoComplete.FontFamily)] = MapFontFamily,
-            [nameof(IAutoComplete.FontSize)] = MapFontSize,
-            [nameof(IAutoComplete.HorizontalTextAlignment)] = MapHorizontalTextAlignment,
+            [nameof(IAutoCompleteView.FontFamily)] = MapFontFamily,
+            [nameof(IAutoCompleteView.FontSize)] = MapFontSize,
+            [nameof(IAutoCompleteView.HorizontalTextAlignment)] = MapHorizontalTextAlignment,
         };
 
-    public static CommandMapper<IAutoComplete, AutoCompleteViewHandler> CommandMapper =
+    public static CommandMapper<IAutoCompleteView, AutoCompleteViewHandler> CommandMapper =
         new(ViewCommandMapper);
 
     public AutoCompleteViewHandler(IPropertyMapper mapper, CommandMapper? commandMapper = null) : base(mapper,

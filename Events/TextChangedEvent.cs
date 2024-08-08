@@ -1,4 +1,4 @@
-﻿using Maui.FreakyControls.Shared.Enums;
+﻿using Maui.MOLControls.Enums;
 
 namespace Maui.MOLControls;
 
