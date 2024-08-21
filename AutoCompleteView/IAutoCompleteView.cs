@@ -8,6 +8,12 @@ public interface IAutoCompleteView : IView
     public TextAlignment HorizontalTextAlignment { get; set; }
     public string FontFamily { get; set; }
     public float FontSize { get; set; }
+    public string DropDownListIcon { get; set; }
+    public int IconListHeight { get; set; }
+    public int IconListVerticalMargin { get; set; }
+    public Color ListBackground { get; set; }
+    public Color ListTextColor { get; set; }
+    public Color DividerColor { get; set; }
 
     string Text { get; set; }
     Color TextColor { get; set; }

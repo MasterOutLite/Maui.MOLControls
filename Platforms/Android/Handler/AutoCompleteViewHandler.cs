@@ -1,17 +1,23 @@
 ﻿using Android.Content.Res;
 using Android.Graphics;
+using Android.Util;
 using AndroidX.Core.View;
 using Maui.MOLControls.Events;
 using Maui.MOLControls.Platforms.Android.Extensions;
 using Maui.MOLControls.Platforms.Android.Helpers;
 using Maui.MOLControls.Platforms.Android.NativeControls;
+using Maui.MOLControls.Platforms.Android.NativeControls.ArrayAdapter;
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Platform;
+using static Android.Webkit.WebSettings;
+using Color = Android.Graphics.Color;
 
 namespace Maui.MOLControls;
 
 public partial class AutoCompleteViewHandler : ViewHandler<IAutoCompleteView, AutoCompleteNativeView>
 {
+    protected ArrayAdapterStyle AdapterStyle { get; } = new ArrayAdapterStyle();
+
     protected override AutoCompleteNativeView CreatePlatformView()
     {
         var _nativeView = new AutoCompleteNativeView(this.Context);
@@ -29,12 +35,13 @@ public partial class AutoCompleteViewHandler : ViewHandler<IAutoCompleteView, Au
         UpdateTextColor(platformView);
         UpdatePlaceholder(platformView);
 
-        platformView.UpdateAdapterStyle(new SuggestCompleteAdapterStyle()
+        platformView.UpdateAdapterStyle(new ArrayAdapterStyle()
         {
-            FontFamily = VirtualView.FontFamily
+            FontFamily = VirtualView.FontFamily,
+            Icon = VirtualView.DropDownListIcon,
+            IconListHeight = VirtualView.IconListHeight,
+            IconListVerticalMargin = VirtualView.IconListVerticalMargin
         });
-
-        // platformView.Click += PlatformViewOnClick;
     }
 
     protected override void DisconnectHandler(AutoCompleteNativeView platformView)
@@ -45,16 +52,6 @@ public partial class AutoCompleteViewHandler : ViewHandler<IAutoCompleteView, Au
 
         platformView.Dispose();
         base.DisconnectHandler(platformView);
-    }
-
-    private void PlatformViewOnClick(object? sender, EventArgs e)
-    {
-        if (VirtualView.IsSuggestionListOpen)
-        {
-            VirtualView.IsSuggestionListOpen = false;
-        }
-
-        VirtualView.IsSuggestionListOpen = true;
     }
 
     private void OnPlatformViewSuggestionChosen(object? sender, ChosenElementEvent e)
@@ -73,6 +70,42 @@ public partial class AutoCompleteViewHandler : ViewHandler<IAutoCompleteView, Au
             handler.PlatformView.Text = view.Text;
     }
 
+    public static void MapDropDownIcon(AutoCompleteViewHandler handler, IAutoCompleteView view)
+    {
+        handler.AdapterStyle.Icon = view.DropDownListIcon;
+        handler.PlatformView?.UpdateAdapterStyle(handler.AdapterStyle);
+    }
+
+    public static void MapListTextColor(AutoCompleteViewHandler handler, IAutoCompleteView view)
+    {
+        handler.AdapterStyle.TextColor = view.ListTextColor.ToPlatform();
+        handler.PlatformView?.UpdateAdapterStyle(handler.AdapterStyle);
+    }
+
+    public static void MapListBackground(AutoCompleteViewHandler handler, IAutoCompleteView view)
+    {
+        handler.AdapterStyle.Background = view.ListBackground.ToPlatform();
+        handler.PlatformView?.UpdateAdapterStyle(handler.AdapterStyle);
+    }
+
+    public static void MapDividerColor (AutoCompleteViewHandler handler, IAutoCompleteView view)
+    {
+        handler.AdapterStyle.DividerColor = view.DividerColor.ToPlatform();
+        handler.PlatformView?.UpdateAdapterStyle(handler.AdapterStyle);
+    }
+
+    public static void MapIconListVerticalMargin (AutoCompleteViewHandler handler, IAutoCompleteView view)
+    {
+        handler.AdapterStyle.IconListVerticalMargin = view.IconListVerticalMargin;
+        handler.PlatformView?.UpdateAdapterStyle(handler.AdapterStyle);
+    }  
+    
+    public static void MapIconListHeight (AutoCompleteViewHandler handler, IAutoCompleteView view)
+    {
+        handler.AdapterStyle.IconListHeight = view.IconListHeight;
+        handler.PlatformView?.UpdateAdapterStyle(handler.AdapterStyle);
+    }
+
     public static void MapTextColor(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
         handler.PlatformView?.SetTextColor(view.TextColor.ToPlatform());
@@ -80,7 +113,10 @@ public partial class AutoCompleteViewHandler : ViewHandler<IAutoCompleteView, Au
 
     public static void MapPlaceholder(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
-        handler.PlatformView.Placeholder = view.Placeholder;
+        if (handler.PlatformView != null)
+        {
+            handler.PlatformView.Placeholder = view.Placeholder;
+        }
     }
 
     public static void MapFontFamily(AutoCompleteViewHandler handler, IAutoCompleteView view)
@@ -88,7 +124,9 @@ public partial class AutoCompleteViewHandler : ViewHandler<IAutoCompleteView, Au
         if (!string.IsNullOrWhiteSpace(view.FontFamily) &&
             FontFamilyAsset.TryGeTypeFace(view.FontFamily, out var face))
         {
-            handler.PlatformView.Typeface = face;
+            handler.PlatformView?.SetTypeface(face, TypefaceStyle.Normal);
+            handler.AdapterStyle.FontFamily = view.FontFamily;
+            handler.PlatformView?.UpdateAdapterStyle(handler.AdapterStyle);
         }
     }
 

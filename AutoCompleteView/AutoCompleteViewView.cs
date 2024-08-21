@@ -10,6 +10,86 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     public readonly WeakEventManager _textChangedEventManager = new();
     private readonly WeakEventManager _suggestionChosenEventManager = new();
 
+    private bool suppressTextChangedEvent;
+
+    public string DropDownListIcon
+    {
+        get => (string)GetValue(DropDownListIconProperty);
+        set => SetValue(DropDownListIconProperty, value);
+    }
+
+    public static readonly BindableProperty DropDownListIconProperty =
+        BindableProperty.Create(nameof(DropDownListIcon),
+            typeof(string),
+            typeof(AutoCompleteViewView),
+            string.Empty,
+            BindingMode.TwoWay);
+
+    public int IconListHeight
+    {
+        get => (int)GetValue(IconListHeightProperty);
+        set => SetValue(VerticalOptionsProperty, value);
+    }
+
+    public static readonly BindableProperty IconListHeightProperty =
+        BindableProperty.Create(nameof(IconListHeight),
+            typeof(int),
+            typeof(AutoCompleteViewView),
+            -1,
+            BindingMode.TwoWay);
+
+    public int IconListVerticalMargin
+    {
+        get => (int)GetValue(IconListVerticalMarginProperty);
+        set => SetValue(IconListVerticalMarginProperty, value);
+    }
+
+    public static readonly BindableProperty IconListVerticalMarginProperty =
+        BindableProperty.Create(nameof(IconListVerticalMargin),
+            typeof(int),
+            typeof(AutoCompleteViewView),
+            0,
+            BindingMode.TwoWay);
+
+    public Color ListBackground
+    {
+        get => (Color)GetValue(ListBackgroundProperty);
+        set => SetValue(ListBackgroundProperty, value);
+    }
+
+    public static readonly BindableProperty ListBackgroundProperty =
+        BindableProperty.Create(nameof(ListBackground),
+            typeof(Color),
+            typeof(AutoCompleteViewView),
+            Colors.White,
+            BindingMode.TwoWay);
+
+    public Color ListTextColor
+    {
+        get => (Color)GetValue(ListTextColorProperty);
+        set => SetValue(ListTextColorProperty, value);
+    }
+
+    public static readonly BindableProperty ListTextColorProperty =
+        BindableProperty.Create(nameof(ListTextColor),
+            typeof(Color),
+            typeof(AutoCompleteViewView),
+            Colors.Black,
+            BindingMode.TwoWay);
+
+    public Color DividerColor
+    {
+        get => (Color)GetValue(DividerColorProperty);
+        set => SetValue(DividerColorProperty, value);
+    }
+
+    public static readonly BindableProperty DividerColorProperty =
+        BindableProperty.Create(nameof(DividerColor),
+            typeof(Color),
+            typeof(AutoCompleteViewView),
+            Colors.Black,
+            BindingMode.TwoWay);
+
     public TextAlignment HorizontalTextAlignment
     {
         get => (TextAlignment)GetValue(HorizontalTextAlignmentProperty);
@@ -39,11 +119,6 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     public static readonly BindableProperty FontSizeProperty =
         BindableProperty.Create(nameof(FontSize), typeof(float), typeof(AutoCompleteViewView), defaultValue: 20f);
 
-    private bool suppressTextChangedEvent;
-    private readonly WeakEventManager querySubmittedEventManager = new();
-    public readonly WeakEventManager textChangedEventManager = new();
-    private readonly WeakEventManager suggestionChosenEventManager = new();
-
     public string Text
     {
         get { return (string)GetValue(TextProperty); }
@@ -59,7 +134,7 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     {
         var box = (AutoCompleteViewView)bindable;
         if (!box.suppressTextChangedEvent)
-            box.textChangedEventManager.HandleEvent(box, new TextChangedEvent("", TextChangeReason.ProgrammaticChange),
+            box._textChangedEventManager.HandleEvent(box, new TextChangedEvent("", TextChangeReason.ProgrammaticChange),
                 nameof(TextChanged));
     }
 
@@ -172,19 +247,19 @@ public class AutoCompleteViewView : View, IAutoCompleteView
 
     public event EventHandler<ChosenElementEvent> SuggestionChosen
     {
-        add => suggestionChosenEventManager.AddEventHandler(value);
-        remove => suggestionChosenEventManager.RemoveEventHandler(value);
+        add => _suggestionChosenEventManager.AddEventHandler(value);
+        remove => _suggestionChosenEventManager.RemoveEventHandler(value);
     }
 
     public void RaiseSuggestionChosen(ChosenElementEvent args)
     {
-        suggestionChosenEventManager.HandleEvent(this, args, nameof(SuggestionChosen));
+        _suggestionChosenEventManager.HandleEvent(this, args, nameof(SuggestionChosen));
     }
 
     public event EventHandler<TextChangedEvent> TextChanged
     {
-        add => textChangedEventManager.AddEventHandler(value);
-        remove => textChangedEventManager.RemoveEventHandler(value);
+        add => _textChangedEventManager.AddEventHandler(value);
+        remove => _textChangedEventManager.RemoveEventHandler(value);
     }
 
     public void NativeControlTextChanged(TextChangedEvent args)
@@ -192,6 +267,6 @@ public class AutoCompleteViewView : View, IAutoCompleteView
         suppressTextChangedEvent = true;
         Text = args.Text;
         suppressTextChangedEvent = false;
-        textChangedEventManager.HandleEvent(this, args, nameof(TextChanged));
+        _textChangedEventManager.HandleEvent(this, args, nameof(TextChanged));
     }
 }

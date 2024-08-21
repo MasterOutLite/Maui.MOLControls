@@ -27,6 +27,13 @@ public partial class AutoCompleteViewHandler
             [nameof(IAutoCompleteView.FontFamily)] = MapFontFamily,
             [nameof(IAutoCompleteView.FontSize)] = MapFontSize,
             [nameof(IAutoCompleteView.HorizontalTextAlignment)] = MapHorizontalTextAlignment,
+            [nameof(IAutoCompleteView.DropDownListIcon)] = MapDropDownIcon,
+
+            [nameof(IAutoCompleteView.ListBackground)] = MapListBackground,
+            [nameof(IAutoCompleteView.ListTextColor)] = MapListTextColor,
+            [nameof(IAutoCompleteView.DividerColor)] = MapDividerColor,
+            [nameof(IAutoCompleteView.IconListHeight)] = MapIconListHeight,
+            [nameof(IAutoCompleteView.IconListVerticalMargin)] = MapIconListVerticalMargin,
         };
 
     public static CommandMapper<IAutoCompleteView, AutoCompleteViewHandler> CommandMapper =

@@ -1,13 +1,9 @@
-﻿using System.Collections.Immutable;
-using Android.Content;
-using Android.Content.Res;
+﻿using Android.Content;
 using Android.Graphics;
 using Android.Views;
 using Android.Widget;
 using Java.Lang;
 using Maui.MOLControls.Platforms.Android.Extensions;
-using Microsoft.Maui.Controls.Platform;
-using Color = Android.Graphics.Color;
 using Object = Java.Lang.Object;
 using View = Android.Views.View;
 
@@ -24,7 +20,7 @@ public class AutoCompleteArrayAdapter : global::Android.Widget.ArrayAdapter, IFi
     protected Typeface? Face;
     protected float FontSize = 16;
 
-    public AutoCompleteArrayAdapter(Context context, int resource, SuggestCompleteAdapterStyle? adapterStyle = null)
+    public AutoCompleteArrayAdapter(Context context, int resource, ArrayAdapterStyle? adapterStyle = null)
         : base(context, resource)
     {
         _filteredList = new List<object>(_originList);
@@ -32,7 +28,7 @@ public class AutoCompleteArrayAdapter : global::Android.Widget.ArrayAdapter, IFi
         SetStyle(adapterStyle);
     }
 
-    public void SetStyle(SuggestCompleteAdapterStyle? adapterStyle)
+    public void SetStyle(ArrayAdapterStyle? adapterStyle)
     {
         if (adapterStyle == null)
         {

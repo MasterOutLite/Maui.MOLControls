@@ -22,7 +22,7 @@ public class AutoCompleteNativeView : AppCompatAutoCompleteTextView
 {
     protected bool suppressTextChangedEvent;
     protected Func<object, string> textFunc;
-    protected AutoCompleteArrayAdapter adapter;
+    protected SimpleArrayAdapter adapter;
     protected Drawable drawableRight;
     protected Drawable drawableLeft;
     protected Drawable drawableTop;
@@ -36,11 +36,10 @@ public class AutoCompleteNativeView : AppCompatAutoCompleteTextView
                     global::Android.Text.InputTypes
                         .TextVariationVisiblePassword; //Disables text suggestions as the auto-complete view is there to do that
         ItemClick += OnItemClick;
-        // Adapter = adapter =
-        //     new SuggestCompleteAdapter(Context, global::Android.Resource.Layout.SimpleDropDownItem1Line);
 
-        Adapter = adapter =
-            new AutoCompleteArrayAdapter(Context, global::Android.Resource.Layout.SimpleDropDownItem1Line);
+        Adapter = adapter = new SimpleArrayAdapter(Context, global::Android.Resource.Layout.SimpleDropDownItem1Line);
+        // Adapter = adapter =
+        //     new AutoCompleteArrayAdapter(Context, global::Android.Resource.Layout.SimpleDropDownItem1Line);
     }
 
     public override bool EnoughToFilter() => true;
@@ -293,109 +292,8 @@ public class AutoCompleteNativeView : AppCompatAutoCompleteTextView
         base.JavaFinalize();
     }
 
-    public void UpdateAdapterStyle(SuggestCompleteAdapterStyle adapterStyle)
+    public void UpdateAdapterStyle(ArrayAdapterStyle adapterStyle)
     {
         adapter.SetStyle(adapterStyle);
     }
-
-    protected class SuggestCompleteAdapter : global::Android.Widget.ArrayAdapter, IFilterable
-    {
-        protected SuggestFilter _filter = new SuggestFilter();
-        protected List<object> ResultList;
-        protected Func<object, string> LabelFunc;
-        protected Typeface? Face;
-        protected float FontSize = 16;
-
-        public SuggestCompleteAdapter(Context context, int textViewResourceId,
-            SuggestCompleteAdapterStyle? adapterStyle = null) : base(context,
-            textViewResourceId)
-        {
-            ResultList = new List<object>();
-            SetNotifyOnChange(true);
-
-            if (adapterStyle == null)
-            {
-                return;
-            }
-
-            if (!string.IsNullOrWhiteSpace(adapterStyle.FontFamily))
-            {
-                Face = global::Android.Graphics.Typeface.CreateFromAsset(
-                    Platform.CurrentActivity?.Assets,
-                    $"{adapterStyle.FontFamily}.ttf");
-            }
-            else
-            {
-                Face = Typeface.Default;
-            }
-        }
-
-        public void UpdateList(IEnumerable<object> list, Func<object, string> labelFunc)
-        {
-            this.LabelFunc = labelFunc;
-            ResultList = list.ToList();
-            _filter.SetFilter(ResultList.Select(labelFunc));
-            NotifyDataSetChanged();
-        }
-
-        public override int Count => ResultList.Count;
-
-        public override Filter Filter => _filter;
-
-        public override View GetView(int position, View? convertView, ViewGroup parent)
-        {
-            var view = base.GetView(position, convertView, parent);
-            TextView? textView = view.FindViewById<TextView>(global::Android.Resource.Id.Text1);
-            if (textView != null)
-            {
-                textView.Typeface = Face;
-                textView.TextSize = FontSize;
-            }
-
-            return view;
-        }
-
-        public override Java.Lang.Object GetItem(int position)
-        {
-            return LabelFunc(GetObject(position));
-        }
-
-        public object GetObject(int position)
-        {
-            return ResultList[position];
-        }
-
-        public override long GetItemId(int position)
-        {
-            return base.GetItemId(position);
-        }
-
-        protected class SuggestFilter : Filter
-        {
-            protected IEnumerable<string> resultList;
-
-            public void SetFilter(IEnumerable<string> list)
-            {
-                resultList = list;
-            }
-
-            protected override FilterResults PerformFiltering(ICharSequence constraint)
-            {
-                if (resultList is null)
-                    return new FilterResults() { Count = 0, Values = null };
-                var arr = resultList.ToArray();
-                return new FilterResults() { Count = arr.Length, Values = arr };
-            }
-
-            protected override void PublishResults(ICharSequence constraint, FilterResults results)
-            {
-            }
-        }
-    }
-}
-
-public class SuggestCompleteAdapterStyle
-{
-    public string FontFamily { get; set; } = string.Empty;
-    public float FontSize { get; set; } = 16;
 }
