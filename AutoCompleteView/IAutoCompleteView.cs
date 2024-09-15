@@ -10,7 +10,11 @@ public interface IAutoCompleteView : IView
     public float FontSize { get; set; }
     public string DropDownListIcon { get; set; }
     public int IconListHeight { get; set; }
+    public int IconListWidth { get; set; }
     public int IconListVerticalMargin { get; set; }
+    public bool IsSingleLine { get; set; }
+    public int ListTextLines { get; set; }
+    public int ListMinimumTextHeight { get; set; }
     public Color ListBackground { get; set; }
     public Color ListTextColor { get; set; }
     public Color DividerColor { get; set; }

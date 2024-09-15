@@ -35,13 +35,7 @@ public partial class AutoCompleteViewHandler : ViewHandler<IAutoCompleteView, Au
         UpdateTextColor(platformView);
         UpdatePlaceholder(platformView);
 
-        platformView.UpdateAdapterStyle(new ArrayAdapterStyle()
-        {
-            FontFamily = VirtualView.FontFamily,
-            Icon = VirtualView.DropDownListIcon,
-            IconListHeight = VirtualView.IconListHeight,
-            IconListVerticalMargin = VirtualView.IconListVerticalMargin
-        });
+        platformView.UpdateAdapterStyle(AdapterStyle);
     }
 
     protected override void DisconnectHandler(AutoCompleteNativeView platformView)
@@ -66,6 +60,11 @@ public partial class AutoCompleteViewHandler : ViewHandler<IAutoCompleteView, Au
 
     public static void MapText(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
+        if (handler.PlatformView == null)
+        {
+            return;
+        }
+
         if (handler.PlatformView.Text != view.Text)
             handler.PlatformView.Text = view.Text;
     }
@@ -88,21 +87,45 @@ public partial class AutoCompleteViewHandler : ViewHandler<IAutoCompleteView, Au
         handler.PlatformView?.UpdateAdapterStyle(handler.AdapterStyle);
     }
 
-    public static void MapDividerColor (AutoCompleteViewHandler handler, IAutoCompleteView view)
+    public static void MapDividerColor(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
         handler.AdapterStyle.DividerColor = view.DividerColor.ToPlatform();
         handler.PlatformView?.UpdateAdapterStyle(handler.AdapterStyle);
     }
 
-    public static void MapIconListVerticalMargin (AutoCompleteViewHandler handler, IAutoCompleteView view)
+    public static void MapIconListVerticalMargin(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
         handler.AdapterStyle.IconListVerticalMargin = view.IconListVerticalMargin;
         handler.PlatformView?.UpdateAdapterStyle(handler.AdapterStyle);
-    }  
-    
-    public static void MapIconListHeight (AutoCompleteViewHandler handler, IAutoCompleteView view)
+    }
+
+    public static void MapIconListHeight(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
         handler.AdapterStyle.IconListHeight = view.IconListHeight;
+        handler.PlatformView?.UpdateAdapterStyle(handler.AdapterStyle);
+    }
+
+    public static void MapIsSingleLine(AutoCompleteViewHandler handler, IAutoCompleteView view)
+    {
+        handler.AdapterStyle.IsSingleLine = view.IsSingleLine;
+        handler.PlatformView?.UpdateAdapterStyle(handler.AdapterStyle);
+    }  
+    
+    public static void MapListTextLines (AutoCompleteViewHandler handler, IAutoCompleteView view)
+    {
+        handler.AdapterStyle.ListTextLines = view.ListTextLines;
+        handler.PlatformView?.UpdateAdapterStyle(handler.AdapterStyle);
+    }
+
+    public static void MapListMinimumTextHeight(AutoCompleteViewHandler handler, IAutoCompleteView view)
+    {
+        handler.AdapterStyle.ListMinimumTextHeight = view.ListMinimumTextHeight;
+        handler.PlatformView?.UpdateAdapterStyle(handler.AdapterStyle);
+    }
+
+    public static void MapIconListWidth(AutoCompleteViewHandler handler, IAutoCompleteView view)
+    {
+        handler.AdapterStyle.IconListWidth = view.IconListWidth;
         handler.PlatformView?.UpdateAdapterStyle(handler.AdapterStyle);
     }
 
@@ -122,7 +145,7 @@ public partial class AutoCompleteViewHandler : ViewHandler<IAutoCompleteView, Au
     public static void MapFontFamily(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
         if (!string.IsNullOrWhiteSpace(view.FontFamily) &&
-            FontFamilyAsset.TryGeTypeFace(view.FontFamily, out var face))
+            FontFamilyAsset.TryGeTypeFace(view.FontFamily, out var face) && handler.PlatformView != null)
         {
             handler.PlatformView?.SetTypeface(face, TypefaceStyle.Normal);
             handler.AdapterStyle.FontFamily = view.FontFamily;
@@ -132,11 +155,21 @@ public partial class AutoCompleteViewHandler : ViewHandler<IAutoCompleteView, Au
 
     public static void MapFontSize(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
+        if (handler.PlatformView == null)
+        {
+            return;
+        }
+
         handler.PlatformView.TextSize = view.FontSize;
     }
 
     public static void MapHorizontalTextAlignment(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
+        if (handler.PlatformView == null)
+        {
+            return;
+        }
+
         handler.PlatformView.TextAlignment = view.HorizontalTextAlignment switch
         {
             TextAlignment.Start => Android.Views.TextAlignment.TextStart,
@@ -148,6 +181,11 @@ public partial class AutoCompleteViewHandler : ViewHandler<IAutoCompleteView, Au
 
     public static void MapThreshold(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
+        if (handler.PlatformView == null)
+        {
+            return;
+        }
+
         handler.PlatformView.Threshold = view.Threshold;
     }
 
@@ -179,47 +217,62 @@ public partial class AutoCompleteViewHandler : ViewHandler<IAutoCompleteView, Au
 
     public static void MapDisplayMemberPath(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
-        handler.PlatformView.SetItems(view?.ItemsSource?.OfType<object>(),
+        handler.PlatformView?.SetItems(view?.ItemsSource?.OfType<object>(),
             (o) => FormatType(o, view?.DisplayMemberPath), (o) => FormatType(o, view?.TextMemberPath));
     }
 
     public static void MapIsSuggestionListOpen(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
+        if (handler.PlatformView == null)
+        {
+            return;
+        }
+
         handler.PlatformView.IsSuggestionListOpen = view.IsSuggestionListOpen;
     }
 
     public static void MapUpdateTextOnSelect(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
+        if (handler.PlatformView == null)
+        {
+            return;
+        }
+
         handler.PlatformView.UpdateTextOnSelect = view.UpdateTextOnSelect;
     }
 
     public static void MapIsEnabled(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
+        if (handler.PlatformView == null)
+        {
+            return;
+        }
+
         handler.PlatformView.Enabled = view.IsEnabled;
     }
 
     public static void MapItemsSource(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
-        handler.PlatformView.SetItems(view?.ItemsSource?.OfType<object>(),
+        handler.PlatformView?.SetItems(view?.ItemsSource?.OfType<object>(),
             (o) => FormatType(o, view?.DisplayMemberPath), (o) => FormatType(o, view?.TextMemberPath));
     }
 
     private void UpdateTextColor(AutoCompleteNativeView platformView)
     {
-        var color = VirtualView?.TextColor;
-        platformView.SetTextColor(color.ToPlatform());
+        var color = VirtualView.TextColor;
+        platformView?.SetTextColor(color.ToPlatform());
     }
 
     private void UpdateDisplayMemberPath(AutoCompleteViewHandler handler, IAutoCompleteView view)
     {
-        handler.PlatformView.SetItems(view?.ItemsSource?.OfType<object>(),
+        handler.PlatformView?.SetItems(view?.ItemsSource?.OfType<object>(),
             (o) => FormatType(o, view?.DisplayMemberPath), (o) => FormatType(o, view?.TextMemberPath));
     }
 
     private void UpdatePlaceholderColor(AutoCompleteNativeView platformView)
     {
-        var placeholderColor = VirtualView?.PlaceholderColor;
-        platformView.SetPlaceholderColor(placeholderColor);
+        var placeholderColor = VirtualView.PlaceholderColor;
+        platformView?.SetPlaceholderColor(placeholderColor);
     }
 
     private void UpdatePlaceholder(AutoCompleteNativeView platformView) =>
@@ -232,7 +285,7 @@ public partial class AutoCompleteViewHandler : ViewHandler<IAutoCompleteView, Au
 
     private void UpdateItemsSource(AutoCompleteNativeView platformView)
     {
-        platformView.SetItems(VirtualView?.ItemsSource?.OfType<object>(),
+        platformView?.SetItems(VirtualView?.ItemsSource?.OfType<object>(),
             (o) => FormatType(o, VirtualView?.DisplayMemberPath), (o) => FormatType(o, VirtualView?.TextMemberPath));
     }
 

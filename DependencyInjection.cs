@@ -11,6 +11,6 @@ public static class DependencyInjection
 
     private static void AddHandlers(this IMauiHandlersCollection handlers)
     {
-        handlers.AddHandler(typeof(AutoCompleteViewView), typeof(AutoCompleteViewHandler));
+        handlers.AddHandler(typeof(AutoCompleteView), typeof(AutoCompleteViewHandler));
     }
 }

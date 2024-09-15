@@ -33,7 +33,11 @@ public partial class AutoCompleteViewHandler
             [nameof(IAutoCompleteView.ListTextColor)] = MapListTextColor,
             [nameof(IAutoCompleteView.DividerColor)] = MapDividerColor,
             [nameof(IAutoCompleteView.IconListHeight)] = MapIconListHeight,
+            [nameof(IAutoCompleteView.IconListWidth)] = MapIconListWidth,
             [nameof(IAutoCompleteView.IconListVerticalMargin)] = MapIconListVerticalMargin,
+            [nameof(IAutoCompleteView.IsSingleLine)] = MapIsSingleLine,
+            [nameof(IAutoCompleteView.ListTextLines)] = MapListTextLines,
+            [nameof(IAutoCompleteView.ListMinimumTextHeight)] = MapListMinimumTextHeight,
         };
 
     public static CommandMapper<IAutoCompleteView, AutoCompleteViewHandler> CommandMapper =

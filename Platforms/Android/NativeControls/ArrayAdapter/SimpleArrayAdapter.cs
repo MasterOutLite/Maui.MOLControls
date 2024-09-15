@@ -19,7 +19,7 @@ public class SimpleArrayAdapter : global::Android.Widget.ArrayAdapter
     protected Typeface? Face;
     protected float FontSize = 16;
     protected Drawable? Drawable;
-    protected ArrayAdapterStyle? AdapterStyle;
+    protected ArrayAdapterStyle AdapterStyle;
 
     public SimpleArrayAdapter(Context context, int textViewResourceId,
         ArrayAdapterStyle? adapterStyle = null) : base(context,
@@ -67,43 +67,51 @@ public class SimpleArrayAdapter : global::Android.Widget.ArrayAdapter
 
     public override Filter Filter { get; }
     public override int Count => ResultList.Count;
-
     public override View GetView(int position, View? convertView, ViewGroup parent)
     {
         LinearLayout layout = new LinearLayout(parent.Context)
         {
             Orientation = Orientation.Horizontal,
+            LayoutParameters =
+                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent),
         };
-        // layout.SetPadding(10, 30, 6, 30);
         layout.SetVerticalGravity(GravityFlags.Center);
-        TextView text = new TextView(parent.Context)
+        TextView textView = new TextView(parent.Context)
         {
             LayoutParameters =
-                new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WrapContent, 1)
+                new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent,
+                    ViewGroup.LayoutParams.WrapContent, 1)
+                {
+                    TopMargin = 30,
+                    BottomMargin = 30,
+                    LeftMargin = 20,
+                    RightMargin = 6,
+                },
+            Gravity = GravityFlags.CenterVertical,
+            Text = LabelFunc(GetObject(position)),
+            Typeface = Face,
+            TextSize = FontSize,
         };
         ImageView imageView = new ImageView(parent.Context)
         {
             LayoutParameters =
-                new LinearLayout.LayoutParams(120, AdapterStyle?.IconListHeight ?? ViewGroup.LayoutParams.MatchParent)
+                new LinearLayout.LayoutParams(AdapterStyle.IconListWidth,
+                    AdapterStyle.IconListHeight)
                 {
                     TopMargin = AdapterStyle.IconListVerticalMargin,
-                    BottomMargin = AdapterStyle.IconListVerticalMargin
+                    BottomMargin = AdapterStyle.IconListVerticalMargin,
                 },
         };
 
-        layout.AddView(text);
+        layout.AddView(textView);
         layout.AddView(imageView);
         layout.SetBackgroundColor(AdapterStyle.Background);
 
-        text.SetTextAppearance(parent.Context, global::Android.Resource.Attribute.TextAppearanceLargePopupMenu);
-        text.SetTextColor(AdapterStyle.TextColor);
-        text.SetSingleLine(true);
-        text.Ellipsize = global::Android.Text.TextUtils.TruncateAt.Marquee;
-        text.SetPadding(20, 30, 6, 30);
-
-        text.Text = LabelFunc(GetObject(position));
-        text.Typeface = Face;
-        text.TextSize = FontSize;
+        textView.SetSingleLine(AdapterStyle.IsSingleLine);
+        textView.SetLines(AdapterStyle.ListTextLines);
+        textView.SetTextColor(AdapterStyle.TextColor);
+        textView.Ellipsize = global::Android.Text.TextUtils.TruncateAt.End;
+        textView.SetMinimumHeight(AdapterStyle.ListMinimumTextHeight);
 
         imageView.SetImageDrawable(Drawable);
         imageView.SetScaleType(ImageView.ScaleType.FitCenter);
@@ -122,7 +130,6 @@ public class SimpleArrayAdapter : global::Android.Widget.ArrayAdapter
 
         // imageView.SetBackgroundColor(Color.AliceBlue);
         // text.SetBackgroundColor(Color.Bisque);
-
         return layout;
     }
 

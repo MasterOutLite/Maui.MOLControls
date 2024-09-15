@@ -32,16 +32,15 @@ public class AutoCompleteNativeView : AppCompatAutoCompleteTextView
     public AutoCompleteNativeView(Context context) : base(context)
     {
         SetMaxLines(1);
+        IsSuggestionListOpen = false;
         InputType = global::Android.Text.InputTypes.TextFlagNoSuggestions |
                     global::Android.Text.InputTypes
                         .TextVariationVisiblePassword; //Disables text suggestions as the auto-complete view is there to do that
         ItemClick += OnItemClick;
-
         Adapter = adapter = new SimpleArrayAdapter(Context, global::Android.Resource.Layout.SimpleDropDownItem1Line);
         // Adapter = adapter =
         //     new AutoCompleteArrayAdapter(Context, global::Android.Resource.Layout.SimpleDropDownItem1Line);
     }
-
     public override bool EnoughToFilter() => true;
 
     public void SetItems(IEnumerable<object> items, Func<object, string> labelFunc, Func<object, string> textFunc)

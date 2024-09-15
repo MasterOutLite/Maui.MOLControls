@@ -4,7 +4,7 @@ using Maui.MOLControls.Events;
 
 namespace Maui.MOLControls;
 
-public class AutoCompleteViewView : View, IAutoCompleteView
+public class AutoCompleteView : View, IAutoCompleteView
 {
     private readonly WeakEventManager _querySubmittedEventManager = new();
     public readonly WeakEventManager _textChangedEventManager = new();
@@ -21,7 +21,7 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     public static readonly BindableProperty DropDownListIconProperty =
         BindableProperty.Create(nameof(DropDownListIcon),
             typeof(string),
-            typeof(AutoCompleteViewView),
+            typeof(AutoCompleteView),
             string.Empty,
             BindingMode.TwoWay);
 
@@ -34,7 +34,20 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     public static readonly BindableProperty IconListHeightProperty =
         BindableProperty.Create(nameof(IconListHeight),
             typeof(int),
-            typeof(AutoCompleteViewView),
+            typeof(AutoCompleteView),
+            -1,
+            BindingMode.TwoWay);
+
+    public int IconListWidth
+    {
+        get => (int)GetValue(IconListWidthProperty);
+        set => SetValue(IconListWidthProperty, value);
+    }
+
+    public static readonly BindableProperty IconListWidthProperty =
+        BindableProperty.Create(nameof(IconListWidth),
+            typeof(int),
+            typeof(AutoCompleteView),
             -1,
             BindingMode.TwoWay);
 
@@ -47,8 +60,47 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     public static readonly BindableProperty IconListVerticalMarginProperty =
         BindableProperty.Create(nameof(IconListVerticalMargin),
             typeof(int),
-            typeof(AutoCompleteViewView),
+            typeof(AutoCompleteView),
             0,
+            BindingMode.TwoWay);
+
+    public bool IsSingleLine
+    {
+        get => (bool)GetValue(IsSingleLineProperty);
+        set => SetValue(IsSingleLineProperty, value);
+    }
+
+    public static readonly BindableProperty IsSingleLineProperty =
+        BindableProperty.Create(nameof(IsSingleLine),
+            typeof(bool),
+            typeof(AutoCompleteView),
+            true,
+            BindingMode.TwoWay);
+
+    public int ListTextLines
+    {
+        get => (int)GetValue(ListTextLinesProperty);
+        set => SetValue(ListTextLinesProperty, value);
+    }
+
+    public static readonly BindableProperty ListTextLinesProperty =
+        BindableProperty.Create(nameof(ListTextLines),
+            typeof(int),
+            typeof(AutoCompleteView),
+            1,
+            BindingMode.TwoWay);
+
+    public int ListMinimumTextHeight
+    {
+        get => (int)GetValue(ListMinimumTextHeightProperty);
+        set => SetValue(ListMinimumTextHeightProperty, value);
+    }
+
+    public static readonly BindableProperty ListMinimumTextHeightProperty =
+        BindableProperty.Create(nameof(ListMinimumTextHeight),
+            typeof(int),
+            typeof(AutoCompleteView),
+            60,
             BindingMode.TwoWay);
 
     public Color ListBackground
@@ -60,7 +112,7 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     public static readonly BindableProperty ListBackgroundProperty =
         BindableProperty.Create(nameof(ListBackground),
             typeof(Color),
-            typeof(AutoCompleteViewView),
+            typeof(AutoCompleteView),
             Colors.White,
             BindingMode.TwoWay);
 
@@ -73,7 +125,7 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     public static readonly BindableProperty ListTextColorProperty =
         BindableProperty.Create(nameof(ListTextColor),
             typeof(Color),
-            typeof(AutoCompleteViewView),
+            typeof(AutoCompleteView),
             Colors.Black,
             BindingMode.TwoWay);
 
@@ -86,7 +138,7 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     public static readonly BindableProperty DividerColorProperty =
         BindableProperty.Create(nameof(DividerColor),
             typeof(Color),
-            typeof(AutoCompleteViewView),
+            typeof(AutoCompleteView),
             Colors.Black,
             BindingMode.TwoWay);
 
@@ -97,7 +149,7 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     }
 
     public static readonly BindableProperty HorizontalTextAlignmentProperty =
-        BindableProperty.Create(nameof(HorizontalTextAlignment), typeof(TextAlignment), typeof(AutoCompleteViewView),
+        BindableProperty.Create(nameof(HorizontalTextAlignment), typeof(TextAlignment), typeof(AutoCompleteView),
             TextAlignment.Center, BindingMode.TwoWay);
 
     public string FontFamily
@@ -107,7 +159,7 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     }
 
     public static readonly BindableProperty FontFamilyProperty =
-        BindableProperty.Create(nameof(FontFamily), typeof(string), typeof(AutoCompleteViewView),
+        BindableProperty.Create(nameof(FontFamily), typeof(string), typeof(AutoCompleteView),
             null);
 
     public float FontSize
@@ -117,7 +169,7 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     }
 
     public static readonly BindableProperty FontSizeProperty =
-        BindableProperty.Create(nameof(FontSize), typeof(float), typeof(AutoCompleteViewView), defaultValue: 20f);
+        BindableProperty.Create(nameof(FontSize), typeof(float), typeof(AutoCompleteView), defaultValue: 20f);
 
     public string Text
     {
@@ -126,13 +178,13 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     }
 
     public static readonly BindableProperty TextProperty =
-        BindableProperty.Create(nameof(Text), typeof(string), typeof(AutoCompleteViewView), "", BindingMode.OneWay,
+        BindableProperty.Create(nameof(Text), typeof(string), typeof(AutoCompleteView), "", BindingMode.OneWay,
             null,
             OnTextPropertyChanged);
 
     private static void OnTextPropertyChanged(BindableObject bindable, object oldValue, object newValue)
     {
-        var box = (AutoCompleteViewView)bindable;
+        var box = (AutoCompleteView)bindable;
         if (!box.suppressTextChangedEvent)
             box._textChangedEventManager.HandleEvent(box, new TextChangedEvent("", TextChangeReason.ProgrammaticChange),
                 nameof(TextChanged));
@@ -145,7 +197,7 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     }
 
     public static readonly BindableProperty ThresholdProperty =
-        BindableProperty.Create(nameof(Threshold), typeof(int), typeof(AutoCompleteViewView), 1, BindingMode.OneWay,
+        BindableProperty.Create(nameof(Threshold), typeof(int), typeof(AutoCompleteView), 1, BindingMode.OneWay,
             null,
             OnTextPropertyChanged);
 
@@ -156,7 +208,7 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     }
 
     public static readonly BindableProperty TextColorProperty =
-        BindableProperty.Create(nameof(TextColor), typeof(Color), typeof(AutoCompleteViewView), Colors.Gray,
+        BindableProperty.Create(nameof(TextColor), typeof(Color), typeof(AutoCompleteView), Colors.Gray,
             BindingMode.OneWay, null, null);
 
     public string Placeholder
@@ -166,7 +218,7 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     }
 
     public static readonly BindableProperty PlaceholderProperty =
-        BindableProperty.Create(nameof(Placeholder), typeof(string), typeof(AutoCompleteViewView), string.Empty,
+        BindableProperty.Create(nameof(Placeholder), typeof(string), typeof(AutoCompleteView), string.Empty,
             BindingMode.OneWay, null, null);
 
     public Color PlaceholderColor
@@ -176,7 +228,7 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     }
 
     public static readonly BindableProperty PlaceholderColorProperty =
-        BindableProperty.Create(nameof(PlaceholderColor), typeof(Color), typeof(AutoCompleteViewView), Colors.Gray,
+        BindableProperty.Create(nameof(PlaceholderColor), typeof(Color), typeof(AutoCompleteView), Colors.Gray,
             BindingMode.OneWay, null, null);
 
     public string TextMemberPath
@@ -186,7 +238,7 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     }
 
     public static readonly BindableProperty TextMemberPathProperty =
-        BindableProperty.Create(nameof(TextMemberPath), typeof(string), typeof(AutoCompleteViewView), string.Empty,
+        BindableProperty.Create(nameof(TextMemberPath), typeof(string), typeof(AutoCompleteView), string.Empty,
             BindingMode.OneWay, null, null);
 
     public string DisplayMemberPath
@@ -196,7 +248,7 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     }
 
     public static readonly BindableProperty DisplayMemberPathProperty =
-        BindableProperty.Create(nameof(DisplayMemberPath), typeof(string), typeof(AutoCompleteViewView), string.Empty,
+        BindableProperty.Create(nameof(DisplayMemberPath), typeof(string), typeof(AutoCompleteView), string.Empty,
             BindingMode.OneWay, null, null);
 
     public bool IsSuggestionListOpen
@@ -206,7 +258,7 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     }
 
     public static readonly BindableProperty IsSuggestionListOpenProperty =
-        BindableProperty.Create(nameof(IsSuggestionListOpen), typeof(bool), typeof(AutoCompleteViewView), false,
+        BindableProperty.Create(nameof(IsSuggestionListOpen), typeof(bool), typeof(AutoCompleteView), false,
             BindingMode.OneWay, null, null);
 
     public bool UpdateTextOnSelect
@@ -216,7 +268,7 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     }
 
     public static readonly BindableProperty UpdateTextOnSelectProperty =
-        BindableProperty.Create(nameof(UpdateTextOnSelect), typeof(bool), typeof(AutoCompleteViewView), true,
+        BindableProperty.Create(nameof(UpdateTextOnSelect), typeof(bool), typeof(AutoCompleteView), true,
             BindingMode.OneWay, null, null);
 
     public System.Collections.IList ItemsSource
@@ -226,7 +278,7 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     }
 
     public static readonly BindableProperty ItemsSourceProperty =
-        BindableProperty.Create(nameof(ItemsSource), typeof(System.Collections.IList), typeof(AutoCompleteViewView),
+        BindableProperty.Create(nameof(ItemsSource), typeof(System.Collections.IList), typeof(AutoCompleteView),
             null,
             BindingMode.OneWay, null, null);
 
@@ -239,7 +291,7 @@ public class AutoCompleteViewView : View, IAutoCompleteView
     public static readonly BindableProperty AllowCopyPasteProperty = BindableProperty.Create(
         nameof(AllowCopyPaste),
         typeof(bool),
-        typeof(AutoCompleteViewView),
+        typeof(AutoCompleteView),
         false,
         BindingMode.OneWay,
         null,
