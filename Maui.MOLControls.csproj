@@ -29,10 +29,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Helpers\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <MauiXaml Update="TouchableView\TouchableView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
